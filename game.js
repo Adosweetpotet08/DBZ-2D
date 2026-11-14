@@ -105,6 +105,17 @@ let screenShakeTimer = 0;
 const SCREEN_SHAKE_DURATION = 8;
 const SCREEN_SHAKE_INTENSITY = 3;
 
+// HIT REACTIONS
+let playerHitStun = 0;
+let enemyHitStun = 0;
+
+let playerKnockback = 0;
+let enemyKnockback = 0;
+
+const HIT_STUN_DURATION = 12;
+const KNOCKBACK_FORCE = 5;
+const KNOCKBACK_FRICTION = 0.75;
+
 // ENEMY AI SETTINGS
 const ENEMY_MOVE_SPEED = 1.3;
 const ENEMY_STOP_DISTANCE = 48;
@@ -251,6 +262,10 @@ function attackPlayer() {
         return;
     }
 
+    if (playerHitStun > 0) {
+        return;
+    }
+
     playerAttackCooldown = ATTACK_COOLDOWN;
     playerAttackAnimation = PLAYER_PUNCH_DURATION;
 
@@ -278,7 +293,15 @@ function attackPlayer() {
 
         enemyHitFlash = 10;
 
-        screenShakeTimer = SCREEN_SHAKE_DURATION;
+// PHASE 9B - ENEMY HIT REACTION
+enemyHitStun = HIT_STUN_DURATION;
+enemyKnockback =
+    Math.sign(enemy.x - player.x) * KNOCKBACK_FORCE;
+
+enemyAttackAnimation = 0;
+enemyAttackWindup = 0;
+
+screenShakeTimer = SCREEN_SHAKE_DURATION;
 
         comboCount++;
         comboTimer = COMBO_WINDOW;
@@ -295,6 +318,11 @@ function attackPlayer() {
 function enemyAttackPlayer() {
 
     if (playerHealth <= 0) {
+        enemyAttackWindup = 0;
+        return;
+    }
+
+    if (enemyHitStun > 0) {
         enemyAttackWindup = 0;
         return;
     }
@@ -346,7 +374,14 @@ function enemyAttackPlayer() {
 
         playerHitFlash = 10;
 
-        screenShakeTimer = SCREEN_SHAKE_DURATION;
+// PHASE 9B - PLAYER HIT REACTION
+playerHitStun = HIT_STUN_DURATION;
+playerKnockback =
+    Math.sign(player.x - enemy.x) * KNOCKBACK_FORCE;
+
+playerAttackAnimation = 0;
+
+screenShakeTimer = SCREEN_SHAKE_DURATION;
 
         enemyAttackCooldown = ENEMY_ATTACK_COOLDOWN;
 
@@ -425,6 +460,11 @@ setupMovementButton("button-right", "right");
 
 function movePlayer() {
 
+    if (playerHitStun > 0) {
+        player.velocityX = 0;
+        return;
+    }
+
     let direction = 0;
 
     if (keys.left) {
@@ -466,6 +506,11 @@ function moveEnemyAI() {
 
     const distance = player.x - enemy.x;
 
+    if (enemyHitStun > 0) {
+        enemy.velocityX = 0;
+        return;
+    }
+  
     if (distance < 0) {
 
         enemy.facing = -1;
@@ -495,6 +540,33 @@ function moveEnemyAI() {
         Math.min(WIDTH - SPRITE_WIDTH, enemy.x)
     );
 
+}
+
+/* =================================
+   PHASE 9B - KNOCKBACK PHYSICS
+================================= */
+
+function updateKnockback() {
+
+    // GOKU KNOCKBACK
+    if (Math.abs(playerKnockback) > 0.1) {
+        player.x += playerKnockback;
+        playerKnockback *= KNOCKBACK_FRICTION;
+    } else {
+        playerKnockback = 0;
+    }
+
+    // KRILLIN KNOCKBACK
+    if (Math.abs(enemyKnockback) > 0.1) {
+        enemy.x += enemyKnockback;
+        enemyKnockback *= KNOCKBACK_FRICTION;
+    } else {
+        enemyKnockback = 0;
+    }
+
+    // ARENA BOUNDARIES
+    player.x = Math.max(0, Math.min(WIDTH - 32, player.x));
+    enemy.x = Math.max(0, Math.min(WIDTH - 32, enemy.x));
 }
 
 
@@ -1604,9 +1676,32 @@ function drawFighters() {
 
     }
 
+  // GOKU HURT REACTION
+let playerHurtTilt = 0;
+
+if (playerHitStun > 0) {
+    const progress =
+        1 - playerHitStun / HIT_STUN_DURATION;
+
+    playerHurtTilt =
+        Math.sin(progress * Math.PI) * 0.22 * player.facing;
+}
+
     ctx.save();
 
-    ctx.globalAlpha = playerHitFlash > 0 ? 0.4 : 1;
+ctx.translate(
+    player.x + SPRITE_WIDTH / 2,
+    player.y + SPRITE_HEIGHT
+);
+
+ctx.rotate(playerHurtTilt);
+
+ctx.translate(
+    -(player.x + SPRITE_WIDTH / 2),
+    -(player.y + SPRITE_HEIGHT)
+);
+
+ctx.globalAlpha = playerHitFlash > 0 ? 0.4 : 1;
 
     drawGoku(
         player.x + playerLunge,
@@ -1652,9 +1747,32 @@ function drawFighters() {
 
     }
 
+  // KRILLIN HURT REACTION
+let enemyHurtTilt = 0;
+
+if (enemyHitStun > 0) {
+    const progress =
+        1 - enemyHitStun / HIT_STUN_DURATION;
+
+    enemyHurtTilt =
+        Math.sin(progress * Math.PI) * 0.22 * enemy.facing;
+}
+
     ctx.save();
 
-    ctx.globalAlpha = enemyHitFlash > 0 ? 0.4 : 1;
+ctx.translate(
+    enemy.x + SPRITE_WIDTH / 2,
+    enemy.y + SPRITE_HEIGHT
+);
+
+ctx.rotate(enemyHurtTilt);
+
+ctx.translate(
+    -(enemy.x + SPRITE_WIDTH / 2),
+    -(enemy.y + SPRITE_HEIGHT)
+);
+
+ctx.globalAlpha = enemyHitFlash > 0 ? 0.4 : 1;
 
     drawKrillin(
         enemy.x + enemyLunge,
@@ -1727,12 +1845,25 @@ function drawGame() {
 function gameLoop() {
 
     frameCount++;
+    // PHASE 9B - HIT-STUN COUNTDOWN
 
+    if (playerHitStun > 0) {
+        playerHitStun--;
+    }
+
+    if (enemyHitStun > 0) {
+        enemyHitStun--;
+    }
+  
     // Update player movement
     movePlayer();
 
     // Update enemy AI
     moveEnemyAI();
+
+    updateKnockback();
+
+  
 
     // Apply physics
     applyPhysics(player);
