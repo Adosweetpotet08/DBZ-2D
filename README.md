@@ -73,7 +73,7 @@ The game is being developed in multiple phases:
 - [x] Phase 8 - Enemy AI and attack animations
 - [x] Phase 9A - Attack animations
 - [x] Phase 9B - Hit reactions and knockback
-- [ ] Phase 9C - Combat polish and hit-stop
+- [x] Phase 9C - Combat polish and hit-stop
 - [ ] Phase 10 - Special attacks and Ki system
 - [ ] Phase 11 - Character selection
 - [ ] Phase 12 - Stage selection
