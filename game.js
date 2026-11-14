@@ -78,6 +78,9 @@ let roundIntroTimer = 0;
 const READY_DURATION = 60;
 const FIGHT_DURATION = 45;
 
+let roundIntroShakeTimer = 0;
+const ROUND_INTRO_SHAKE_DURATION = 8;
+const ROUND_INTRO_SHAKE_INTENSITY = 4;
 
 const ATTACK_DAMAGE = 10;
 const ATTACK_RANGE = 65;
@@ -2076,6 +2079,7 @@ function drawGame() {
     }
 
   
+
 if (roundState === "ready" || roundState === "fight") {
 
     ctx.save();
@@ -2083,8 +2087,46 @@ if (roundState === "ready" || roundState === "fight") {
     ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
+    
+if (roundState === "fight") {
+
+    const flashAlpha =
+        Math.max(0, 1 - roundIntroTimer / 12) * 0.65;
+
+    ctx.fillStyle = `rgba(255, 255, 255, ${flashAlpha})`;
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+}
+
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
+
+    let progress = roundIntroTimer / READY_DURATION;
+    let scale = 1;
+    let alpha = 1;
+
+    
+if (roundState === "ready") {
+
+    scale = 0.6 + progress * 0.4;
+    alpha = Math.min(1, progress * 3);
+
+}
+
+else if (roundState === "fight") {
+
+    let fightProgress = Math.min(1, roundIntroTimer / 12);
+
+    scale = 1.5 - (0.5 * fightProgress);
+    alpha = 1;
+
+}
+
+
+    ctx.translate(WIDTH / 2, HEIGHT / 2);
+    ctx.scale(scale, scale);
+
+    ctx.globalAlpha = alpha;
 
     ctx.font = "bold 32px monospace";
 
@@ -2093,12 +2135,13 @@ if (roundState === "ready" || roundState === "fight") {
 
     ctx.fillText(
         roundState === "ready" ? "READY?" : "FIGHT!",
-        WIDTH / 2,
-        HEIGHT / 2
+        0,
+        0
     );
 
     ctx.restore();
 }
+
 
 
 }
@@ -2157,6 +2200,18 @@ if (roundState !== "playing" && !gameOver) {
         requestAnimationFrame(gameLoop);
         return;
     }
+
+    
+if (roundState !== "playing" && !gameOver) {
+
+    updateRoundIntro();
+
+    drawGame();
+
+    requestAnimationFrame(gameLoop);
+    return;
+}
+
 
     // PHASE 9D - FREEZE AFTER K.O.
 
