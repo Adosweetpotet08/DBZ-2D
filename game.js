@@ -64,6 +64,13 @@ const enemy = {
 let playerHealth = 100;
 let enemyHealth = 100;
 
+/* =================================
+   PHASE 9D - MATCH STATE
+================================= */
+
+let gameOver = false;
+let matchWinner = "";
+
 const ATTACK_DAMAGE = 10;
 const ATTACK_RANGE = 65;
 const ATTACK_COOLDOWN = 25;
@@ -74,7 +81,7 @@ let playerHitFlash = 0;
 
 // PLAYER ATTACK ANIMATION
 let playerAttackAnimation = 0;
-const PLAYER_PUNCH_DURATION = 10;
+const PLAYER_PUNCH_DURATION = 16;
 
 // ENEMY ATTACK SETTINGS
 let enemyAttackCooldown = 0;
@@ -91,7 +98,7 @@ const ENEMY_ATTACK_WINDUP = 20;
 // ENEMY ATTACK ANIMATION
 let enemyAttackAnimation = 0;
 
-const ENEMY_PUNCH_DURATION = 10;
+const ENEMY_PUNCH_DURATION = 16;
 
 // COMBO SYSTEM
 let comboCount = 0;
@@ -108,6 +115,14 @@ const SCREEN_SHAKE_INTENSITY = 3;
 // HIT STOP
 let hitStopTimer = 0;
 const HIT_STOP_DURATION = 10;
+
+/* =================================
+   PHASE 9C - HIT SPARKS
+================================= */
+
+let hitSparks = [];
+
+const HIT_SPARK_DURATION = 12;
 
 // HIT REACTIONS
 let playerHitStun = 0;
@@ -131,11 +146,39 @@ const ENEMY_STOP_DISTANCE = 48;
 
 function updateHealthBars() {
 
+    
+    
     document.getElementById("player-health").style.width =
         playerHealth + "%";
 
     document.getElementById("enemy-health").style.width =
         enemyHealth + "%";
+
+}
+
+/* =================================
+   PHASE 9D - K.O. DETECTION
+================================= */
+
+function checkKnockout() {
+
+    if (gameOver) return;
+
+    if (enemyHealth <= 0) {
+        enemyHealth = 0;
+        screenShakeTimer = 0;
+        screenShakeIntensity = 0;
+        gameOver = true;
+        matchWinner = "GOKU";
+    }
+
+    else if (playerHealth <= 0) {
+        playerHealth = 0;
+        screenShakeTimer = 0;
+        screenShakeIntensity = 0;
+        gameOver = true;
+        matchWinner = "KRILLIN";
+    }
 
 }
 
@@ -262,6 +305,10 @@ function jump(character) {
 // PLAYER ATTACK
 function attackPlayer() {
 
+    if (gameOver) {
+    return;
+}
+  
     if (playerAttackCooldown > 0) {
         return;
     }
@@ -310,12 +357,22 @@ screenShakeTimer = SCREEN_SHAKE_DURATION;
       // HIT STOP
 hitStopTimer = HIT_STOP_DURATION;
 
+      // PHASE 9C - IMPACT SPARKS
+
+const impactX =
+    (player.x + enemy.x) / 2 + SPRITE_WIDTH / 2;
+
+const impactY =
+    (player.y + enemy.y) / 2 + 22;
+
+createHitSparks(impactX, impactY);
+
         comboCount++;
         comboTimer = COMBO_WINDOW;
 
         updateComboCounter();
         updateHealthBars();
-
+        checkKnockout();
     }
 
 }
@@ -324,6 +381,10 @@ hitStopTimer = HIT_STOP_DURATION;
 // ENEMY ATTACK WITH PREPARATION
 function enemyAttackPlayer() {
 
+    if (gameOver) {
+    return;
+    }
+  
     if (playerHealth <= 0) {
         enemyAttackWindup = 0;
         return;
@@ -393,10 +454,20 @@ screenShakeTimer = SCREEN_SHAKE_DURATION;
       // HIT STOP
 hitStopTimer = HIT_STOP_DURATION;
 
+      // PHASE 9C - IMPACT SPARKS
+
+const impactX =
+    (player.x + enemy.x) / 2 + SPRITE_WIDTH / 2;
+
+const impactY =
+    (player.y + enemy.y) / 2 + 22;
+
+createHitSparks(impactX, impactY);
+
         enemyAttackCooldown = ENEMY_ATTACK_COOLDOWN;
 
         updateHealthBars();
-
+        checkKnockout();
     }
 
 }
@@ -577,6 +648,111 @@ function updateKnockback() {
     // ARENA BOUNDARIES
     player.x = Math.max(0, Math.min(WIDTH - 32, player.x));
     enemy.x = Math.max(0, Math.min(WIDTH - 32, enemy.x));
+}
+
+/* =================================
+   PHASE 9C - CREATE HIT SPARKS
+================================= */
+
+function createHitSparks(x, y) {
+
+    const angles = [
+        0,
+        Math.PI / 4,
+        Math.PI / 2,
+        Math.PI * 3 / 4,
+        Math.PI,
+        Math.PI * 5 / 4,
+        Math.PI * 3 / 2,
+        Math.PI * 7 / 4
+    ];
+
+    const colors = [
+        "#ffffff",
+        "#fff7a8",
+        "#ffd43b",
+        "#ff9633"
+    ];
+
+    angles.forEach((angle, i) => {
+
+        const speed = 1.8 + (i % 3) * 0.5;
+
+        hitSparks.push({
+            x: x,
+            y: y,
+
+            velocityX: Math.cos(angle) * speed,
+            velocityY: Math.sin(angle) * speed,
+
+            life: HIT_SPARK_DURATION,
+            maxLife: HIT_SPARK_DURATION,
+
+            size: i % 3 === 0 ? 3 : 2,
+
+            color: colors[i % colors.length]
+        });
+
+    });
+
+}
+
+
+/* =================================
+   UPDATE HIT SPARKS
+================================= */
+
+function updateHitSparks() {
+
+    for (let i = hitSparks.length - 1; i >= 0; i--) {
+
+        const spark = hitSparks[i];
+
+        spark.x += spark.velocityX;
+        spark.y += spark.velocityY;
+
+        spark.velocityX *= 0.96;
+        spark.velocityY *= 0.96;
+
+        spark.velocityY += 0.08;
+
+        spark.life--;
+
+        if (spark.life <= 0) {
+            hitSparks.splice(i, 1);
+        }
+
+    }
+
+}
+
+
+/* =================================
+   DRAW HIT SPARKS
+================================= */
+
+function drawHitSparks() {
+
+    ctx.save();
+
+    for (const spark of hitSparks) {
+
+        ctx.globalAlpha =
+            spark.life / spark.maxLife;
+
+        ctx.fillStyle = spark.color;
+
+        ctx.fillRect(
+            Math.round(spark.x),
+            Math.round(spark.y),
+            spark.size,
+            spark.size
+        );
+
+    }
+
+    ctx.restore();
+
 }
 
 
@@ -1843,8 +2019,37 @@ function drawGame() {
     drawDecorations();
     drawFighters();
 
-    ctx.restore();
+// PHASE 9C - DRAW IMPACT SPARKS
+drawHitSparks();
 
+ctx.restore();
+
+}
+
+// TEMPORARY K.O. DISPLAY
+
+if (gameOver) {
+
+    ctx.save();
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 28px monospace";
+    ctx.textAlign = "center";
+
+    ctx.fillText("K.O.!", WIDTH / 2, HEIGHT / 2 - 15);
+
+    ctx.font = "bold 14px monospace";
+
+    ctx.fillText(
+        matchWinner + " WINS!",
+        WIDTH / 2,
+        HEIGHT / 2 + 15
+    );
+
+    ctx.restore();
 }
 
 
@@ -1863,6 +2068,14 @@ function gameLoop() {
         return;
     }
 
+    // PHASE 9D - FREEZE AFTER K.O.
+
+if (gameOver) {
+    drawGame();
+    requestAnimationFrame(gameLoop);
+    return;
+}
+  
     frameCount++;
   
     // PHASE 9B - HIT-STUN COUNTDOWN
@@ -1939,6 +2152,9 @@ function gameLoop() {
         playerHitFlash--;
     }
 
+    // PHASE 9C - UPDATE HIT SPARKS
+updateHitSparks();
+  
     // Render game
     drawGame();
 
