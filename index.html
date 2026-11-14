@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Ball Fighting v1.0</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main id="game-container">
+
+        <header id="game-header">
+            <h1>DRAGON BALL FIGHTING v1.0</h1>
+        </header>
+
+        <section id="battle-interface">
+
+            <div class="fighter-status">
+                <h2 id="player-name">GOKU</h2>
+
+                <div class="health-bar">
+                    <div id="player-health"></div>
+                </div>
+
+                <div class="ki-bar">
+                    <div id="player-ki"></div>
+                </div>
+            </div>
+
+            <div id="versus">VS</div>
+
+            <div class="fighter-status">
+                <h2 id="enemy-name">KRILLIN</h2>
+
+                <div class="health-bar">
+                    <div id="enemy-health"></div>
+                </div>
+
+                <div class="ki-bar">
+                    <div id="enemy-ki"></div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="game-screen">
+
+            <canvas
+                id="game-canvas"
+                width="480"
+                height="270">
+            </canvas>
+
+            <div id="combo-counter">
+                <span id="combo-number">0</span>
+                <span id="combo-label">HITS</span>
+            </div>
+
+        </section>
+
+        <section id="mobile-controls">
+
+            <div id="movement-buttons">
+                <button id="button-left" type="button">◀</button>
+                <button id="button-right" type="button">▶</button>
+            </div>
+
+            <div id="action-buttons">
+                <button id="button-b" type="button">B</button>
+                <button id="button-a" type="button">A</button>
+            </div>
+
+        </section>
+
+        <footer id="game-footer">
+            MOBILE CONTROLS: MOVE | A: ATTACK | B: JUMP
+        </footer>
+
+    </main>
+
+    <script src="game.js"></script>
+</body>
+</html>
