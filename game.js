@@ -105,6 +105,10 @@ let screenShakeTimer = 0;
 const SCREEN_SHAKE_DURATION = 8;
 const SCREEN_SHAKE_INTENSITY = 3;
 
+// HIT STOP
+let hitStopTimer = 0;
+const HIT_STOP_DURATION = 10;
+
 // HIT REACTIONS
 let playerHitStun = 0;
 let enemyHitStun = 0;
@@ -303,6 +307,9 @@ enemyAttackWindup = 0;
 
 screenShakeTimer = SCREEN_SHAKE_DURATION;
 
+      // HIT STOP
+hitStopTimer = HIT_STOP_DURATION;
+
         comboCount++;
         comboTimer = COMBO_WINDOW;
 
@@ -382,6 +389,9 @@ playerKnockback =
 playerAttackAnimation = 0;
 
 screenShakeTimer = SCREEN_SHAKE_DURATION;
+
+      // HIT STOP
+hitStopTimer = HIT_STOP_DURATION;
 
         enemyAttackCooldown = ENEMY_ATTACK_COOLDOWN;
 
@@ -1844,9 +1854,18 @@ function drawGame() {
 
 function gameLoop() {
 
-    frameCount++;
-    // PHASE 9B - HIT-STUN COUNTDOWN
+    // PHASE 9C - HIT STOP FREEZE
+    if (hitStopTimer > 0) {
+        hitStopTimer--;
 
+        drawGame();
+        requestAnimationFrame(gameLoop);
+        return;
+    }
+
+    frameCount++;
+  
+    // PHASE 9B - HIT-STUN COUNTDOWN
     if (playerHitStun > 0) {
         playerHitStun--;
     }
