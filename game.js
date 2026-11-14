@@ -71,6 +71,14 @@ let enemyHealth = 100;
 let gameOver = false;
 let matchWinner = "";
 
+
+let roundState = "ready";
+let roundIntroTimer = 0;
+
+const READY_DURATION = 60;
+const FIGHT_DURATION = 45;
+
+
 const ATTACK_DAMAGE = 10;
 const ATTACK_RANGE = 65;
 const ATTACK_COOLDOWN = 25;
@@ -167,7 +175,6 @@ function checkKnockout() {
     if (enemyHealth <= 0) {
         enemyHealth = 0;
         screenShakeTimer = 0;
-        screenShakeIntensity = 0;
         gameOver = true;
         matchWinner = "GOKU";
     }
@@ -175,9 +182,31 @@ function checkKnockout() {
     else if (playerHealth <= 0) {
         playerHealth = 0;
         screenShakeTimer = 0;
-        screenShakeIntensity = 0;
         gameOver = true;
         matchWinner = "KRILLIN";
+    }
+
+}
+
+
+function updateRoundIntro() {
+
+    if (roundState === "ready") {
+        roundIntroTimer++;
+
+        if (roundIntroTimer >= READY_DURATION) {
+            roundState = "fight";
+            roundIntroTimer = 0;
+        }
+    }
+
+    else if (roundState === "fight") {
+        roundIntroTimer++;
+
+        if (roundIntroTimer >= FIGHT_DURATION) {
+            roundState = "playing";
+            roundIntroTimer = 0;
+        }
     }
 
 }
@@ -1994,14 +2023,14 @@ ctx.globalAlpha = enemyHitFlash > 0 ? 0.4 : 1;
    21. DRAW COMPLETE GAME WORLD
 ================================= */
 
+
 function drawGame() {
 
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
     ctx.save();
 
-    if (screenShakeTimer > 0) {
-
+    if (screenShakeTimer > 0 && !gameOver) {
         const shakeX =
             (Math.random() - 0.5) * SCREEN_SHAKE_INTENSITY * 2;
 
@@ -2009,7 +2038,6 @@ function drawGame() {
             (Math.random() - 0.5) * SCREEN_SHAKE_INTENSITY * 2;
 
         ctx.translate(shakeX, shakeY);
-
     }
 
     drawSky();
@@ -2018,13 +2046,63 @@ function drawGame() {
     drawGround();
     drawDecorations();
     drawFighters();
+    drawHitSparks();
 
-// PHASE 9C - DRAW IMPACT SPARKS
-drawHitSparks();
+    ctx.restore();
 
-ctx.restore();
+    // PHASE 9D - K.O. DISPLAY
+    if (gameOver) {
+
+        ctx.save();
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 32px monospace";
+        ctx.textAlign = "center";
+
+        ctx.fillText("K.O!", WIDTH / 2, HEIGHT / 2 - 15);
+
+        ctx.font = "bold 16px monospace";
+
+        ctx.fillText(
+            matchWinner + " WINS!",
+            WIDTH / 2,
+            HEIGHT / 2 + 20
+        );
+
+        ctx.restore();
+    }
+
+  
+if (roundState === "ready" || roundState === "fight") {
+
+    ctx.save();
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.font = "bold 32px monospace";
+
+    ctx.fillStyle =
+        roundState === "ready" ? "#ffffff" : "#ffd43b";
+
+    ctx.fillText(
+        roundState === "ready" ? "READY?" : "FIGHT!",
+        WIDTH / 2,
+        HEIGHT / 2
+    );
+
+    ctx.restore();
+}
+
 
 }
+
 
 // TEMPORARY K.O. DISPLAY
 
@@ -2059,6 +2137,18 @@ if (gameOver) {
 
 function gameLoop() {
 
+    
+if (roundState !== "playing" && !gameOver) {
+
+    updateRoundIntro();
+
+    drawGame();
+
+    requestAnimationFrame(gameLoop);
+    return;
+}
+
+  
     // PHASE 9C - HIT STOP FREEZE
     if (hitStopTimer > 0) {
         hitStopTimer--;
