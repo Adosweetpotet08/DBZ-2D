@@ -56,7 +56,6 @@ const enemy = {
     isGrounded: true
 };
 
-
 /* =================================
    3.1 COMBAT VARIABLES
 ================================= */
@@ -82,7 +81,7 @@ let roundIntroShakeTimer = 0;
 const ROUND_INTRO_SHAKE_DURATION = 8;
 const ROUND_INTRO_SHAKE_INTENSITY = 4;
 
-const ATTACK_DAMAGE = 10;
+const ATTACK_DAMAGE = 5;
 const ATTACK_RANGE = 65;
 const ATTACK_COOLDOWN = 25;
 
@@ -958,16 +957,16 @@ function drawShadow(x, y) {
 
 }
 
-
 /* =================================
    18. GOKU SPRITE - RECTANGLES (matches reference image)
    Every p(x, y, width, height, color) draws one rectangle.
-   Goku's body is drawn the same in every pose; only the
-   arms change between the standing and punch poses.
+   The sprite is a 32 x 48 pixel grid (same size as the fighter
+   hitbox). Goku's body is drawn the same in every pose; only
+   his front (right-hand) arm changes between idle and punch.
 ================================= */
 
-const GOKU_HEIGHT = 54;   // sprite height in pixels
-const GOKU_ANCHOR_X = 14; // column that lines up with the middle of his body
+const GOKU_HEIGHT = 48;   // sprite height in pixels
+const GOKU_ANCHOR_X = 16; // column that lines up with the middle of his body
 
 function drawGoku(x, y, facing, pose = "idle") {
 
@@ -989,464 +988,415 @@ function drawGoku(x, y, facing, pose = "idle") {
     };
 
     // --- COLOR PALETTE ---
-    const BLK = "#000000"; // Black outline
-    const HRG = "#606060"; // Hair highlight (gray)
-    const HRL = "#7c7c7c"; // Hair highlight (light gray)
-    const SKL = "#f3c5a3"; // Skin light
-    const SKM = "#df8c68"; // Skin mid
-    const SKD = "#924a3d"; // Skin shadow
-    const ORG = "#fb5303"; // Gi orange
-    const ORM = "#d5430d"; // Gi orange-red
-    const ORD = "#a72a00"; // Gi dark orange
-    const ORX = "#580b00"; // Gi darkest shadow
-    const BLU = "#1c3e86"; // Blue undershirt / wristbands
-    const BLL = "#2651b0"; // Blue light
-    const BLD = "#0b1e46"; // Blue dark
-    const RED = "#f23252"; // Boot red
-    const YEL = "#fbd139"; // Boot yellow
-    const WHT = "#f4f4f4"; // White highlight
+    const BLK = "#000000"; // Black outline / hair
+    const NVY = "#0d0e25"; // Navy outline
+    const BLU = "#21315f"; // Blue undershirt
+    const BLL = "#2e48ac"; // Blue light (wristband)
+    const ORX = "#480906"; // Gi darkest shadow
+    const ORR = "#76150a"; // Gi red-brown shadow
+    const ORD = "#ab2a12"; // Gi dark orange
+    const ORG = "#f45a1e"; // Gi orange
+    const SKD = "#894a3c"; // Skin shadow
+    const SKS = "#bc6a4d"; // Skin mid-shadow
+    const SKM = "#e39776"; // Skin mid
+    const SKL = "#fbd6bf"; // Skin light
+    const WHT = "#f6f6f3"; // White highlight
+    const GRY = "#aab2b1"; // Gray highlight
+    const RED = "#e01e27"; // Boot red
+    const YEL = "#e4b52a"; // Boot yellow
 
     // --- BODY (same in every pose) ---
-    // Black outline
-    p(20, 0, 3, 1, BLK);
-    p(17, 1, 1, 1, BLK);
-    p(19, 1, 2, 1, BLK);
-    p(16, 2, 1, 1, BLK);
-    p(18, 2, 2, 2, BLK);
-    p(15, 3, 1, 1, BLK);
-    p(17, 3, 1, 8, BLK);
-    p(14, 4, 1, 2, BLK);
-    p(18, 4, 1, 7, BLK);
-    p(21, 4, 6, 1, BLK);
-    p(16, 5, 1, 7, BLK);
-    p(20, 5, 1, 1, BLK);
-    p(27, 5, 1, 1, BLK);
-    p(13, 6, 1, 6, BLK);
-    p(23, 6, 4, 1, BLK);
-    p(28, 6, 1, 1, BLK);
-    p(21, 7, 4, 1, BLK);
-    p(27, 7, 1, 1, BLK);
+    // Black outline / hair
+    p(19, 0, 2, 1, BLK);
+    p(17, 1, 3, 2, BLK);
+    p(16, 2, 1, 15, BLK);
+    p(15, 3, 1, 13, BLK);
+    p(17, 3, 2, 2, BLK);
+    p(14, 4, 1, 16, BLK);
+    p(22, 4, 4, 5, BLK);
+    p(17, 5, 1, 13, BLK);
+    p(20, 5, 2, 11, BLK);
+    p(26, 5, 2, 3, BLK);
+    p(13, 6, 1, 14, BLK);
+    p(19, 6, 1, 14, BLK);
+    p(28, 6, 1, 2, BLK);
+    p(11, 7, 1, 12, BLK);
+    p(18, 7, 1, 12, BLK);
     p(29, 7, 1, 1, BLK);
-    p(20, 8, 4, 1, BLK);
-    p(25, 8, 2, 1, BLK);
-    p(11, 9, 2, 3, BLK);
-    p(14, 9, 2, 6, BLK);
-    p(19, 9, 4, 2, BLK);
-    p(24, 9, 1, 1, BLK);
+    p(26, 8, 1, 1, BLK);
+    p(12, 9, 1, 10, BLK);
+    p(22, 9, 3, 1, BLK);
     p(3, 10, 2, 1, BLK);
     p(10, 10, 1, 8, BLK);
-    p(23, 10, 1, 1, BLK);
-    p(4, 11, 3, 1, BLK);
-    p(19, 11, 2, 1, BLK);
-    p(26, 11, 1, 1, BLK);
-    p(5, 12, 3, 1, BLK);
-    p(9, 12, 1, 1, BLK);
-    p(11, 12, 1, 1, BLK);
-    p(17, 12, 2, 4, BLK);
-    p(20, 12, 2, 1, BLK);
-    p(23, 12, 2, 1, BLK);
-    p(28, 12, 1, 1, BLK);
-    p(6, 13, 3, 1, BLK);
-    p(13, 13, 1, 4, BLK);
-    p(19, 13, 1, 5, BLK);
-    p(21, 13, 2, 1, BLK);
-    p(24, 13, 4, 1, BLK);
+    p(22, 10, 2, 7, BLK);
+    p(4, 11, 4, 1, BLK);
+    p(24, 11, 3, 4, BLK);
+    p(5, 12, 5, 1, BLK);
+    p(27, 12, 2, 3, BLK);
+    p(6, 13, 4, 5, BLK);
     p(29, 13, 1, 2, BLK);
-    p(0, 14, 3, 1, BLK);
-    p(7, 14, 2, 1, BLK);
-    p(16, 14, 1, 1, BLK);
-    p(20, 14, 1, 5, BLK);
-    p(22, 14, 2, 4, BLK);
-    p(25, 14, 4, 1, BLK);
+    p(1, 14, 5, 1, BLK);
     p(30, 14, 1, 1, BLK);
-    p(2, 15, 4, 1, BLK);
-    p(14, 15, 1, 3, BLK);
-    p(24, 15, 1, 4, BLK);
-    p(4, 16, 6, 1, BLK);
-    p(11, 16, 1, 3, BLK);
-    p(18, 16, 1, 1, BLK);
-    p(25, 16, 1, 4, BLK);
-    p(6, 17, 4, 3, BLK);
-    p(12, 17, 1, 3, BLK);
-    p(15, 17, 2, 1, BLK);
-    p(3, 18, 3, 1, BLK);
-    p(17, 18, 2, 1, BLK);
-    p(22, 18, 1, 1, BLK);
-    p(5, 19, 1, 1, BLK);
-    p(19, 19, 1, 1, BLK);
-    p(21, 19, 1, 3, BLK);
-    p(7, 20, 3, 1, BLK);
-    p(9, 21, 3, 1, BLK);
-    p(12, 22, 1, 2, BLK);
-    p(20, 22, 1, 2, BLK);
-    p(9, 23, 3, 1, BLK);
-    p(6, 24, 3, 1, BLK);
-    p(21, 24, 2, 1, BLK);
-    p(6, 25, 1, 3, BLK);
-    p(23, 25, 1, 1, BLK);
-    p(5, 28, 1, 3, BLK);
-    p(10, 28, 1, 3, BLK);
-    p(22, 29, 1, 1, BLK);
-    p(9, 30, 1, 1, BLK);
-    p(21, 30, 1, 2, BLK);
-    p(4, 31, 1, 3, BLK);
-    p(8, 31, 1, 1, BLK);
-    p(11, 31, 3, 1, BLK);
-    p(7, 32, 1, 3, BLK);
-    p(13, 32, 1, 2, BLK);
-    p(20, 32, 1, 2, BLK);
-    p(3, 34, 1, 4, BLK);
-    p(12, 34, 1, 2, BLK);
-    p(21, 34, 1, 2, BLK);
-    p(8, 35, 1, 1, BLK);
-    p(9, 36, 1, 2, BLK);
-    p(11, 36, 1, 1, BLK);
-    p(22, 36, 1, 2, BLK);
-    p(8, 37, 1, 2, BLK);
-    p(10, 37, 1, 2, BLK);
-    p(4, 38, 2, 1, BLK);
-    p(23, 38, 1, 3, BLK);
-    p(6, 39, 2, 1, BLK);
-    p(9, 39, 1, 2, BLK);
-    p(8, 40, 1, 1, BLK);
-    p(16, 40, 2, 1, BLK);
-    p(7, 41, 1, 1, BLK);
-    p(15, 41, 1, 1, BLK);
-    p(17, 41, 1, 4, BLK);
-    p(24, 41, 1, 1, BLK);
-    p(6, 42, 1, 4, BLK);
-    p(14, 42, 1, 4, BLK);
-    p(25, 42, 1, 3, BLK);
-    p(18, 45, 1, 1, BLK);
-    p(24, 45, 1, 1, BLK);
-    p(7, 46, 1, 4, BLK);
-    p(13, 46, 1, 1, BLK);
-    p(19, 46, 1, 7, BLK);
-    p(22, 46, 2, 1, BLK);
-    p(11, 47, 2, 1, BLK);
-    p(22, 47, 1, 1, BLK);
-    p(11, 48, 1, 1, BLK);
-    p(21, 48, 1, 2, BLK);
-    p(10, 49, 1, 1, BLK);
-    p(6, 50, 1, 2, BLK);
-    p(9, 50, 1, 1, BLK);
-    p(22, 50, 2, 1, BLK);
-    p(8, 51, 1, 3, BLK);
-    p(24, 51, 1, 2, BLK);
-    p(5, 52, 1, 2, BLK);
-    p(20, 52, 4, 1, BLK);
-    p(6, 53, 2, 1, BLK);
+    p(3, 15, 3, 1, BLK);
+    p(24, 15, 2, 2, BLK);
+    p(5, 16, 1, 2, BLK);
+    p(21, 16, 1, 1, BLK);
+    p(26, 16, 1, 1, BLK);
+    p(3, 17, 2, 1, BLK);
+    p(23, 17, 2, 1, BLK);
+    p(6, 18, 3, 1, BLK);
+    p(15, 18, 1, 1, BLK);
+    p(8, 19, 1, 2, BLK);
+    p(16, 19, 2, 1, BLK);
+    p(6, 20, 2, 1, BLK);
+    p(18, 20, 1, 1, BLK);
 
-    // Hair highlight (gray)
-    p(17, 2, 1, 1, HRG);
-    p(16, 3, 1, 2, HRG);
-    p(15, 4, 1, 5, HRG);
-    p(21, 5, 3, 1, HRG);
-    p(14, 6, 1, 3, HRG);
-    p(19, 6, 4, 1, HRG);
-    p(19, 7, 2, 1, HRG);
-    p(19, 8, 1, 1, HRG);
-    p(7, 11, 1, 1, HRG);
-    p(17, 11, 2, 1, HRG);
-    p(21, 11, 5, 1, HRG);
-    p(8, 12, 1, 1, HRG);
-    p(12, 12, 2, 1, HRG);
-    p(16, 12, 1, 2, HRG);
-    p(19, 12, 1, 1, HRG);
-    p(22, 12, 1, 1, HRG);
-    p(25, 12, 3, 1, HRG);
-    p(9, 13, 1, 3, HRG);
-    p(11, 13, 2, 3, HRG);
-    p(20, 13, 1, 1, HRG);
-    p(23, 13, 1, 1, HRG);
-    p(3, 14, 4, 1, HRG);
-    p(21, 14, 1, 2, HRG);
-    p(6, 15, 3, 1, HRG);
-    p(12, 16, 1, 1, HRG);
-    p(13, 17, 1, 1, HRG);
-    p(14, 18, 1, 1, HRG);
-    p(18, 19, 1, 2, HRG);
+    // Navy outline
+    p(24, 21, 1, 1, NVY);
+    p(6, 27, 2, 1, NVY);
+    p(7, 29, 1, 1, NVY);
+    p(11, 29, 1, 2, NVY);
+    p(5, 30, 2, 1, NVY);
+    p(19, 30, 1, 1, NVY);
+    p(4, 41, 1, 3, NVY);
+    p(7, 41, 1, 2, NVY);
+    p(27, 41, 1, 3, NVY);
+    p(24, 42, 1, 2, NVY);
+    p(3, 43, 1, 1, NVY);
+    p(6, 43, 1, 3, NVY);
+    p(2, 44, 1, 1, NVY);
+    p(25, 44, 1, 3, NVY);
+    p(28, 44, 1, 2, NVY);
+    p(1, 45, 1, 2, NVY);
+    p(2, 46, 4, 1, NVY);
+    p(29, 46, 1, 1, NVY);
+    p(26, 47, 3, 1, NVY);
 
-    // Hair highlight (light gray)
-    p(19, 0, 1, 1, HRL);
-    p(18, 1, 1, 1, HRL);
-    p(24, 5, 3, 1, HRL);
-    p(27, 6, 1, 1, HRL);
-    p(25, 7, 2, 1, HRL);
-    p(28, 7, 1, 1, HRL);
-    p(24, 8, 1, 1, HRL);
-    p(23, 9, 1, 1, HRL);
-    p(28, 13, 1, 1, HRL);
-    p(24, 14, 1, 1, HRL);
-    p(25, 15, 1, 1, HRL);
-    p(21, 29, 1, 1, HRL);
+    // Blue undershirt
+    p(17, 20, 1, 2, BLU);
+    p(11, 22, 1, 5, BLU);
+    p(22, 22, 3, 2, BLU);
+    p(21, 24, 3, 2, BLU);
+    p(12, 25, 1, 3, BLU);
+    p(17, 25, 1, 1, BLU);
+    p(13, 26, 4, 1, BLU);
+    p(13, 27, 3, 1, BLU);
+    p(6, 28, 2, 1, BLU);
+    p(13, 28, 2, 1, BLU);
+    p(5, 29, 2, 1, BLU);
+    p(12, 30, 2, 1, BLU);
+    p(18, 30, 1, 1, BLU);
+    p(14, 31, 4, 1, BLU);
+    p(6, 41, 1, 2, BLU);
+    p(26, 41, 1, 2, BLU);
+    p(5, 44, 1, 2, BLU);
+    p(27, 44, 1, 1, BLU);
+    p(3, 45, 2, 1, BLU);
+    p(26, 45, 1, 2, BLU);
+    p(28, 46, 1, 1, BLU);
 
-    // Skin light
-    p(18, 17, 1, 1, SKL);
-    p(21, 17, 1, 2, SKL);
-    p(19, 18, 1, 1, SKL);
-    p(20, 19, 1, 3, SKL);
-    p(17, 21, 3, 2, SKL);
-    p(16, 23, 3, 1, SKL);
-    p(13, 25, 3, 1, SKL);
-    p(18, 25, 2, 1, SKL);
-    p(14, 26, 4, 1, SKL);
-    p(19, 26, 1, 1, SKL);
-    p(8, 28, 2, 2, SKL);
-    p(8, 30, 1, 1, SKL);
-    p(6, 31, 1, 2, SKL);
-    p(5, 32, 1, 1, SKL);
-    p(21, 32, 1, 1, SKL);
-    p(5, 35, 3, 1, SKL);
-    p(4, 36, 2, 2, SKL);
-    p(8, 36, 1, 1, SKL);
-    p(6, 38, 2, 1, SKL);
-
-    // Skin mid
-    p(15, 15, 2, 2, SKM);
-    p(17, 16, 1, 2, SKM);
-    p(21, 16, 1, 1, SKM);
-    p(10, 18, 1, 3, SKM);
-    p(13, 18, 1, 4, SKM);
-    p(11, 19, 1, 2, SKM);
-    p(14, 19, 1, 4, SKM);
-    p(15, 20, 2, 3, SKM);
-    p(13, 23, 1, 2, SKM);
-    p(15, 23, 1, 1, SKM);
-    p(12, 24, 1, 1, SKM);
-    p(14, 24, 1, 1, SKM);
-    p(16, 25, 1, 1, SKM);
-    p(6, 28, 2, 1, SKM);
-    p(6, 30, 1, 1, SKM);
-    p(5, 31, 1, 1, SKM);
-    p(4, 35, 1, 1, SKM);
-    p(6, 36, 1, 2, SKM);
-
-    // Skin shadow
-    p(15, 18, 1, 2, SKD);
-    p(12, 20, 1, 2, SKD);
-    p(13, 22, 1, 1, SKD);
-    p(14, 23, 1, 1, SKD);
-    p(19, 23, 1, 1, SKD);
-    p(15, 24, 4, 1, SKD);
-    p(17, 25, 1, 1, SKD);
-    p(18, 26, 1, 1, SKD);
-    p(6, 29, 2, 1, SKD);
-    p(7, 30, 1, 2, SKD);
-    p(7, 36, 1, 2, SKD);
-
-    // Gi orange
-    p(11, 24, 1, 1, ORG);
-    p(10, 25, 1, 1, ORG);
-    p(12, 25, 1, 1, ORG);
-    p(20, 25, 2, 1, ORG);
-    p(11, 26, 1, 3, ORG);
-    p(21, 26, 1, 2, ORG);
-    p(12, 27, 2, 1, ORG);
-    p(12, 28, 1, 1, ORG);
-    p(14, 28, 1, 1, ORG);
-    p(13, 29, 1, 2, ORG);
-    p(15, 29, 1, 1, ORG);
-    p(16, 30, 1, 2, ORG);
-    p(20, 30, 1, 2, ORG);
-    p(17, 31, 3, 1, ORG);
-    p(13, 34, 1, 2, ORG);
-    p(15, 35, 2, 4, ORG);
-    p(18, 35, 1, 3, ORG);
-    p(20, 35, 1, 6, ORG);
-    p(12, 36, 1, 6, ORG);
-    p(14, 36, 1, 4, ORG);
-    p(21, 36, 1, 6, ORG);
-    p(13, 37, 1, 4, ORG);
-    p(11, 38, 1, 4, ORG);
-    p(22, 39, 1, 3, ORG);
-    p(15, 40, 1, 1, ORG);
-    p(18, 40, 1, 1, ORG);
-    p(14, 41, 1, 1, ORG);
-    p(19, 41, 1, 1, ORG);
-    p(20, 42, 1, 1, ORG);
-    p(24, 43, 1, 1, ORG);
-    p(23, 44, 1, 1, ORG);
-
-    // Gi orange-red
-    p(9, 24, 2, 1, ORM);
-    p(20, 34, 1, 1, ORM);
-    p(8, 41, 1, 1, ORM);
-    p(7, 42, 1, 3, ORM);
-    p(24, 42, 1, 1, ORM);
-    p(13, 44, 1, 1, ORM);
-    p(19, 44, 1, 1, ORM);
-    p(8, 45, 1, 1, ORM);
-    p(12, 45, 1, 1, ORM);
-    p(20, 45, 3, 1, ORM);
-    p(9, 46, 3, 1, ORM);
-
-    // Gi dark orange
-    p(19, 24, 2, 1, ORD);
-    p(11, 25, 1, 1, ORD);
-    p(12, 26, 2, 1, ORD);
-    p(13, 28, 1, 1, ORD);
-    p(11, 29, 2, 2, ORD);
-    p(14, 29, 1, 3, ORD);
-    p(15, 30, 1, 2, ORD);
-    p(16, 32, 4, 1, ORD);
-    p(14, 34, 2, 1, ORD);
-    p(14, 35, 1, 1, ORD);
-    p(17, 35, 1, 4, ORD);
-    p(13, 36, 1, 1, ORD);
-    p(11, 37, 1, 1, ORD);
-    p(18, 38, 1, 1, ORD);
-    p(22, 38, 1, 1, ORD);
-    p(10, 39, 1, 5, ORD);
-    p(15, 39, 2, 1, ORD);
-    p(14, 40, 1, 1, ORD);
-    p(19, 40, 1, 1, ORD);
-    p(13, 41, 1, 2, ORD);
-    p(18, 41, 1, 1, ORD);
-    p(20, 41, 1, 1, ORD);
-    p(11, 42, 2, 1, ORD);
-    p(21, 42, 2, 1, ORD);
-    p(11, 43, 1, 1, ORD);
+    // Blue light (wristband)
+    p(12, 29, 1, 1, BLL);
+    p(14, 30, 4, 1, BLL);
+    p(13, 31, 1, 1, BLL);
 
     // Gi darkest shadow
-    p(19, 35, 1, 5, ORX);
-    p(17, 39, 2, 1, ORX);
-    p(9, 41, 1, 5, ORX);
-    p(23, 41, 1, 3, ORX);
-    p(8, 42, 1, 3, ORX);
-    p(18, 42, 2, 2, ORX);
-    p(12, 43, 2, 1, ORX);
-    p(20, 43, 3, 2, ORX);
-    p(10, 44, 3, 1, ORX);
-    p(18, 44, 1, 1, ORX);
-    p(24, 44, 1, 1, ORX);
-    p(7, 45, 1, 1, ORX);
-    p(10, 45, 2, 1, ORX);
-    p(13, 45, 1, 1, ORX);
-    p(19, 45, 1, 1, ORX);
-    p(23, 45, 1, 1, ORX);
-    p(12, 46, 1, 1, ORX);
+    p(9, 21, 1, 1, ORX);
+    p(8, 22, 1, 3, ORX);
+    p(9, 25, 1, 3, ORX);
+    p(21, 27, 1, 2, ORX);
+    p(10, 28, 1, 1, ORX);
+    p(19, 29, 2, 1, ORX);
+    p(9, 31, 3, 1, ORX);
+    p(20, 31, 1, 1, ORX);
+    p(6, 32, 3, 1, ORX);
+    p(21, 32, 2, 1, ORX);
+    p(4, 33, 2, 1, ORX);
+    p(23, 33, 1, 1, ORX);
+    p(3, 34, 1, 2, ORX);
+    p(24, 34, 2, 1, ORX);
+    p(26, 35, 1, 2, ORX);
+    p(2, 36, 1, 1, ORX);
+    p(1, 37, 1, 2, ORX);
+    p(9, 37, 9, 1, ORX);
+    p(27, 37, 1, 1, ORX);
+    p(8, 38, 1, 2, ORX);
+    p(18, 38, 2, 1, ORX);
+    p(28, 38, 1, 3, ORX);
+    p(2, 39, 1, 1, ORX);
+    p(20, 39, 2, 1, ORX);
+    p(3, 40, 1, 1, ORX);
+    p(7, 40, 1, 1, ORX);
+    p(21, 40, 1, 2, ORX);
+    p(22, 42, 2, 1, ORX);
 
-    // Blue undershirt / wristbands
-    p(8, 25, 2, 1, BLU);
-    p(10, 26, 1, 1, BLU);
-    p(20, 26, 1, 2, BLU);
-    p(7, 27, 2, 1, BLU);
-    p(14, 27, 6, 1, BLU);
-    p(22, 27, 1, 1, BLU);
-    p(16, 29, 1, 1, BLU);
-    p(17, 30, 3, 1, BLU);
-    p(14, 32, 2, 1, BLU);
-    p(5, 33, 2, 2, BLU);
-    p(16, 34, 4, 1, BLU);
-    p(10, 47, 1, 1, BLU);
-    p(20, 47, 1, 2, BLU);
-    p(20, 51, 2, 1, BLU);
+    // Gi red-brown shadow
+    p(15, 32, 1, 5, ORR);
+    p(20, 32, 1, 1, ORR);
+    p(6, 33, 1, 1, ORR);
+    p(14, 33, 1, 3, ORR);
+    p(6, 37, 3, 1, ORR);
+    p(26, 37, 1, 2, ORR);
+    p(5, 38, 1, 1, ORR);
+    p(20, 38, 3, 1, ORR);
+    p(23, 39, 1, 1, ORR);
+    p(5, 41, 1, 2, ORR);
+    p(3, 44, 2, 1, ORR);
+    p(2, 45, 1, 1, ORR);
 
-    // Blue light
-    p(7, 25, 1, 1, BLL);
-    p(22, 26, 1, 1, BLL);
-    p(8, 46, 1, 3, BLL);
-    p(10, 48, 1, 1, BLL);
-    p(7, 52, 1, 1, BLL);
+    // Gi dark orange
+    p(22, 21, 2, 1, ORD);
+    p(10, 22, 1, 2, ORD);
+    p(21, 22, 1, 1, ORD);
+    p(9, 24, 1, 1, ORD);
+    p(20, 26, 2, 1, ORD);
+    p(10, 27, 1, 1, ORD);
+    p(19, 27, 1, 1, ORD);
+    p(11, 28, 1, 1, ORD);
+    p(16, 28, 1, 2, ORD);
+    p(17, 29, 1, 1, ORD);
+    p(12, 31, 1, 2, ORD);
+    p(18, 31, 1, 4, ORD);
+    p(9, 32, 3, 1, ORD);
+    p(14, 32, 1, 1, ORD);
+    p(17, 32, 1, 2, ORD);
+    p(7, 33, 1, 1, ORD);
+    p(22, 33, 1, 1, ORD);
+    p(12, 34, 2, 2, ORD);
+    p(10, 35, 2, 1, ORD);
+    p(19, 35, 1, 1, ORD);
+    p(3, 36, 1, 3, ORD);
+    p(9, 36, 1, 1, ORD);
+    p(14, 36, 1, 1, ORD);
+    p(4, 37, 2, 1, ORD);
+    p(18, 37, 1, 1, ORD);
+    p(4, 38, 1, 1, ORD);
+    p(6, 38, 1, 1, ORD);
+    p(23, 38, 3, 1, ORD);
+    p(22, 39, 1, 1, ORD);
+    p(24, 39, 3, 1, ORD);
+    p(6, 40, 1, 1, ORD);
+    p(25, 40, 2, 1, ORD);
+    p(22, 41, 1, 1, ORD);
 
-    // Blue dark
-    p(7, 26, 3, 1, BLD);
-    p(9, 27, 2, 1, BLD);
-    p(15, 28, 6, 1, BLD);
-    p(17, 29, 4, 1, BLD);
-    p(14, 33, 6, 1, BLD);
-    p(21, 33, 1, 1, BLD);
-    p(4, 34, 1, 1, BLD);
-    p(20, 46, 1, 1, BLD);
-    p(9, 49, 1, 1, BLD);
-    p(20, 50, 1, 1, BLD);
+    // Gi orange
+    p(9, 22, 1, 2, ORG);
+    p(20, 23, 2, 1, ORG);
+    p(10, 24, 1, 3, ORG);
+    p(19, 24, 2, 2, ORG);
+    p(18, 25, 1, 2, ORG);
+    p(17, 26, 1, 1, ORG);
+    p(19, 26, 1, 1, ORG);
+    p(11, 27, 1, 1, ORG);
+    p(16, 27, 1, 1, ORG);
+    p(20, 27, 1, 2, ORG);
+    p(12, 28, 1, 1, ORG);
+    p(15, 28, 1, 2, ORG);
+    p(19, 28, 1, 1, ORG);
+    p(13, 29, 2, 1, ORG);
+    p(18, 29, 1, 1, ORG);
+    p(19, 31, 1, 4, ORG);
+    p(13, 32, 1, 2, ORG);
+    p(16, 32, 1, 5, ORG);
+    p(8, 33, 5, 1, ORG);
+    p(20, 33, 2, 5, ORG);
+    p(4, 34, 8, 1, ORG);
+    p(17, 34, 1, 3, ORG);
+    p(22, 34, 2, 4, ORG);
+    p(4, 35, 6, 1, ORG);
+    p(18, 35, 1, 2, ORG);
+    p(24, 35, 2, 3, ORG);
+    p(4, 36, 5, 1, ORG);
+    p(10, 36, 4, 1, ORG);
+    p(19, 36, 1, 2, ORG);
+    p(2, 37, 1, 2, ORG);
+    p(7, 38, 1, 2, ORG);
+    p(27, 38, 1, 3, ORG);
+    p(3, 39, 4, 1, ORG);
+    p(4, 40, 2, 1, ORG);
+    p(22, 40, 3, 1, ORG);
+    p(23, 41, 2, 1, ORG);
 
-    // Boot red
-    p(21, 46, 1, 2, RED);
-    p(9, 47, 1, 2, RED);
-    p(8, 49, 1, 1, RED);
-    p(21, 50, 1, 1, RED);
-    p(7, 51, 1, 1, RED);
-    p(22, 51, 2, 1, RED);
-    p(6, 52, 1, 1, RED);
+    // Skin shadow
+    p(22, 17, 1, 1, SKD);
+    p(9, 18, 1, 3, SKD);
+    p(21, 19, 1, 3, SKD);
+    p(10, 21, 2, 1, SKD);
+    p(20, 22, 1, 1, SKD);
+    p(19, 23, 1, 1, SKD);
+    p(4, 24, 2, 1, SKD);
+    p(17, 24, 2, 1, SKD);
+    p(0, 25, 3, 1, SKD);
+    p(4, 25, 1, 2, SKD);
+    p(6, 25, 1, 2, SKD);
+    p(0, 26, 1, 1, SKD);
+    p(3, 26, 1, 1, SKD);
+    p(8, 26, 1, 1, SKD);
+    p(1, 27, 1, 1, SKD);
+    p(0, 28, 1, 2, SKD);
+    p(8, 29, 3, 1, SKD);
+    p(1, 30, 1, 1, SKD);
+    p(4, 30, 1, 1, SKD);
+    p(2, 31, 2, 1, SKD);
 
-    // Boot yellow
-    p(20, 49, 1, 1, YEL);
-    p(7, 50, 2, 1, YEL);
+    // Skin mid-shadow
+    p(12, 19, 1, 3, SKS);
+    p(14, 20, 1, 1, SKS);
+    p(13, 22, 1, 3, SKS);
+    p(14, 23, 1, 1, SKS);
+    p(15, 24, 2, 1, SKS);
+    p(2, 27, 4, 1, SKS);
+    p(3, 28, 3, 1, SKS);
+    p(1, 29, 2, 1, SKS);
+    p(4, 29, 1, 1, SKS);
+
+    // Skin mid
+    p(15, 16, 1, 2, SKM);
+    p(16, 17, 1, 2, SKM);
+    p(10, 18, 1, 3, SKM);
+    p(17, 18, 1, 1, SKM);
+    p(21, 18, 1, 1, SKM);
+    p(11, 19, 1, 2, SKM);
+    p(18, 19, 1, 1, SKM);
+    p(13, 20, 1, 2, SKM);
+    p(14, 21, 1, 2, SKM);
+    p(20, 21, 1, 1, SKM);
+    p(12, 22, 1, 3, SKM);
+    p(15, 22, 1, 1, SKM);
+    p(18, 23, 1, 1, SKM);
+    p(14, 24, 1, 2, SKM);
+    p(5, 25, 1, 2, SKM);
+    p(13, 25, 1, 1, SKM);
+    p(15, 25, 2, 1, SKM);
+    p(1, 26, 2, 1, SKM);
+    p(8, 27, 1, 2, SKM);
+    p(1, 28, 2, 1, SKM);
+    p(9, 28, 1, 1, SKM);
+    p(3, 29, 1, 2, SKM);
+    p(2, 30, 1, 1, SKM);
+
+    // Skin light
+    p(20, 16, 1, 5, SKL);
+    p(21, 17, 1, 1, SKL);
+    p(19, 20, 1, 3, SKL);
+    p(18, 21, 1, 2, SKL);
+    p(16, 22, 2, 2, SKL);
+    p(15, 23, 1, 1, SKL);
 
     // White highlight
-    p(21, 28, 1, 1, WHT);
+    p(15, 20, 2, 2, WHT);
+    p(17, 27, 1, 1, WHT);
+    p(18, 28, 1, 1, WHT);
 
-    // --- ARMS (change with the pose) ---
+    // Gray highlight
+    p(15, 19, 1, 1, GRY);
+    p(18, 27, 1, 1, GRY);
+    p(17, 28, 1, 1, GRY);
+
+    // Boot red
+    p(25, 41, 1, 2, RED);
+    p(26, 44, 1, 1, RED);
+    p(27, 45, 1, 2, RED);
+
+    // Boot yellow
+    p(5, 43, 1, 1, YEL);
+    p(25, 43, 2, 1, YEL);
+
+    // --- FRONT ARM (changes with the pose) ---
     if (pose === "punch") {
 
-        // Black outline
-        p(34, 24, 4, 1, BLK);
-        p(22, 25, 1, 1, BLK);
-        p(24, 25, 10, 1, BLK);
-        p(38, 25, 1, 5, BLK);
-        p(23, 29, 11, 1, BLK);
-        p(34, 30, 4, 1, BLK);
-
-        // Skin light
-        p(34, 25, 4, 2, SKL);
-        p(27, 26, 4, 2, SKL);
-        p(34, 27, 3, 1, SKL);
-
-        // Skin mid
-        p(27, 28, 4, 1, SKM);
-        p(34, 28, 3, 2, SKM);
-        p(37, 29, 1, 1, SKM);
-
-        // Skin shadow
-        p(37, 27, 1, 2, SKD);
-
-        // Blue undershirt / wristbands
-        p(23, 27, 4, 2, BLU);
-        p(31, 27, 3, 2, BLU);
-        p(22, 28, 1, 1, BLU);
-
-        // Blue light
-        p(23, 26, 4, 1, BLL);
-        p(31, 26, 3, 1, BLL);
+        // Extended arm: sleeve, forearm, wristband, fist
+        p(23, 20, 16, 1, NVY);
+        p(23, 25, 16, 1, NVY);
+        p(38, 21, 1, 4, NVY);
+        p(23, 24, 5, 1, NVY);
+        p(23, 21, 5, 1, BLL);
+        p(31, 21, 2, 3, BLL);
+        p(23, 22, 5, 2, BLU);
+        p(31, 24, 2, 1, BLU);
+        p(28, 21, 3, 2, SKL);
+        p(33, 21, 5, 2, SKL);
+        p(28, 23, 3, 1, SKM);
+        p(33, 23, 5, 1, SKM);
+        p(28, 24, 3, 1, SKS);
+        p(33, 24, 5, 1, SKS);
+        p(35, 22, 1, 2, SKD);
+        p(37, 22, 1, 3, SKD);
 
     } else {
 
-        // Black outline
-        p(23, 26, 1, 2, BLK);
-        p(22, 28, 1, 1, BLK);
-        p(23, 30, 1, 2, BLK);
-        p(24, 32, 1, 2, BLK);
-        p(25, 34, 1, 4, BLK);
-        p(24, 38, 1, 1, BLK);
+        // Black outline / hair
+        p(25, 17, 2, 1, BLK);
+        p(25, 18, 1, 1, BLK);
 
-        // Skin light
-        p(22, 31, 1, 2, SKL);
-        p(24, 34, 1, 4, SKL);
-        p(23, 37, 1, 1, SKL);
+        // Navy outline
+        p(25, 22, 1, 2, NVY);
+        p(26, 23, 1, 1, NVY);
+        p(27, 24, 1, 2, NVY);
+        p(30, 24, 1, 2, NVY);
+
+        // Blue undershirt
+        p(27, 23, 1, 1, BLU);
+        p(24, 24, 1, 1, BLU);
+
+        // Blue light (wristband)
+        p(28, 24, 2, 2, BLL);
+
+        // Gi darkest shadow
+        p(22, 20, 2, 1, ORX);
+
+        // Skin shadow
+        p(27, 17, 3, 1, SKD);
+        p(22, 18, 1, 1, SKD);
+        p(26, 18, 1, 2, SKD);
+        p(30, 18, 1, 3, SKD);
+        p(25, 20, 1, 2, SKD);
+        p(31, 21, 1, 3, SKD);
+        p(26, 22, 1, 1, SKD);
+        p(30, 26, 1, 2, SKD);
+        p(24, 27, 2, 1, SKD);
+        p(26, 28, 1, 1, SKD);
+        p(29, 28, 1, 2, SKD);
+        p(27, 29, 2, 1, SKD);
+
+        // Skin mid-shadow
+        p(26, 20, 2, 1, SKS);
+        p(27, 21, 1, 2, SKS);
+        p(24, 25, 1, 2, SKS);
 
         // Skin mid
-        p(22, 30, 1, 1, SKM);
-        p(22, 35, 2, 1, SKM);
-        p(23, 36, 1, 1, SKM);
+        p(27, 18, 1, 1, SKM);
+        p(28, 19, 2, 1, SKM);
+        p(29, 20, 1, 1, SKM);
+        p(29, 22, 2, 2, SKM);
+        p(25, 25, 1, 1, SKM);
+        p(26, 26, 2, 1, SKM);
+        p(26, 27, 1, 1, SKM);
+        p(29, 27, 1, 1, SKM);
 
-        // Blue undershirt / wristbands
-        p(23, 32, 1, 3, BLU);
-        p(22, 33, 1, 1, BLU);
+        // Skin light
+        p(28, 18, 2, 1, SKL);
+        p(27, 19, 1, 1, SKL);
+        p(28, 20, 1, 4, SKL);
+        p(26, 21, 1, 1, SKL);
+        p(29, 21, 2, 1, SKL);
+        p(25, 24, 2, 1, SKL);
+        p(26, 25, 1, 1, SKL);
+        p(25, 26, 1, 1, SKL);
+        p(28, 26, 2, 1, SKL);
+        p(27, 27, 2, 2, SKL);
 
-        // Blue light
-        p(22, 25, 1, 1, BLL);
-
-        // Blue dark
-        p(22, 34, 1, 1, BLD);
+        // White highlight
+        p(23, 18, 2, 2, WHT);
+        p(22, 19, 1, 1, WHT);
+        p(25, 19, 1, 1, WHT);
+        p(24, 20, 1, 1, WHT);
 
     }
 
     ctx.restore();
 
 }
-
 
 /* =================================
    19. KRILLIN SPRITE - RECTANGLES (matches reference image)
