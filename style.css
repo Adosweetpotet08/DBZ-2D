@@ -378,3 +378,43 @@ button {
         font-size: 19px;
     }
 }
+
+/* =================================
+   PHASE 9E - REMATCH BUTTON
+================================= */
+
+#rematch-button {
+    position: absolute;
+    left: 50%;
+    top: 62%;
+    transform: translate(-50%, -50%);
+
+    padding: 12px 28px;
+
+    background: #ffd43b;
+    color: #171717;
+
+    border: 3px solid #ffffff;
+    border-radius: 4px;
+
+    font-family: monospace;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+
+    cursor: pointer;
+    z-index: 100;
+
+    box-shadow:
+        0 4px 0 #b8860b,
+        0 0 12px rgba(255, 212, 59, 0.6);
+}
+
+#rematch-button:active {
+    transform: translate(-50%, -45%);
+    box-shadow: 0 1px 0 #b8860b;
+}
+
+#rematch-button[hidden] {
+    display: none;
+}
