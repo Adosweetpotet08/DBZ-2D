@@ -69,6 +69,7 @@ let enemyHealth = 100;
 
 let gameOver = false;
 let matchWinner = "";
+document.getElementById("rematch-button").hidden = true;
 
 
 let roundState = "ready";
@@ -188,6 +189,10 @@ function checkKnockout() {
         matchWinner = "KRILLIN";
     }
 
+    if (gameOver) {
+    document.getElementById("rematch-button").hidden = false;
+    }
+
 }
 
 
@@ -213,6 +218,80 @@ function updateRoundIntro() {
 
 }
 
+
+/* =================================
+   PHASE 9E - RESET MATCH
+================================= */
+
+function resetMatch() {
+
+    // RESET HEALTH
+    playerHealth = 100;
+    enemyHealth = 100;
+
+    // RESET PLAYER POSITION
+    player.x = 105;
+    player.y = GROUND_Y - SPRITE_HEIGHT;
+    player.velocityX = 0;
+    player.velocityY = 0;
+    player.facing = 1;
+    player.isJumping = false;
+    player.isGrounded = true;
+
+    // RESET ENEMY POSITION
+    enemy.x = 345;
+    enemy.y = GROUND_Y - SPRITE_HEIGHT;
+    enemy.velocityX = 0;
+    enemy.velocityY = 0;
+    enemy.facing = -1;
+    enemy.isJumping = false;
+    enemy.isGrounded = true;
+
+    // RESET ATTACKS
+    playerAttackCooldown = 0;
+    enemyAttackCooldown = 0;
+    playerAttackAnimation = 0;
+    enemyAttackAnimation = 0;
+    enemyAttackWindup = 0;
+
+    // RESET HIT REACTIONS
+    playerHitStun = 0;
+    enemyHitStun = 0;
+    playerKnockback = 0;
+    enemyKnockback = 0;
+    playerHitFlash = 0;
+    enemyHitFlash = 0;
+
+    // RESET COMBO
+    comboCount = 0;
+    comboTimer = 0;
+
+    // RESET VISUAL EFFECTS
+    screenShakeTimer = 0;
+    hitStopTimer = 0;
+    hitSparks = [];
+
+    // RESET INPUTS
+    keys.left = false;
+    keys.right = false;
+    mobileMovement.left = false;
+    mobileMovement.right = false;
+
+    // RESET MATCH STATE
+    gameOver = false;
+    matchWinner = "";
+
+    // START ROUND INTRO AGAIN
+    roundState = "ready";
+    roundIntroTimer = 0;
+
+    frameCount = 0;
+
+    // UPDATE UI
+    updateHealthBars();
+    updateComboCounter();
+
+}
 
 /* =================================
    3.3 COMBO DISPLAY
@@ -2264,6 +2343,16 @@ updateHitSparks();
 
 // Set initial health bar values
 updateHealthBars();
+// PHASE 9E - REMATCH BUTTON
+const rematchButton =
+    document.getElementById("rematch-button");
 
+rematchButton.addEventListener("click", () => {
+
+    rematchButton.hidden = true;
+
+    resetMatch();
+
+});
 // Start game
 gameLoop();
